@@ -478,8 +478,13 @@ static void ui_draw_autohold(UIState *s) {
 
 // ascc left icon bottom left 3
 static void ui_draw_ascc(UIState *s) {
-  auto control_state = (*s->sm)["controlsState"].getControlsState();
-  int acc = control_state.getAdaptiveCruise();
+  bool acc_bool = s->scene.car_state.getAdaptiveCruise();
+  int acc = 0;
+  if (acc_bool == true) {
+    acc = 1;
+  } else {
+    acc = 0;
+  }
 
   const int radius = 85;
   const int center_x = radius + (bdr_s*2);
