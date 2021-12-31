@@ -61,28 +61,48 @@ class CarInterface(CarInterfaceBase):
     ret.enableGasInterceptor = 0x201 in fingerprint[0]
     ret.openpilotLongitudinalControl = ret.enableGasInterceptor
 
-    tire_stiffness_factor = 0.5
-
     ret.minSteerSpeed = 11 * CV.KPH_TO_MS
-    ret.steerRateCost = 0.3625 # def : 2.0
-    ret.steerActuatorDelay = 0.1925  # def: 0.2 Default delay, not measured yet
 
     ret.minEnableSpeed = -1
     ret.mass = 1645. + STD_CARGO_KG  # 공차중량
     ret.wheelbase = 2.725  # 축간거리 (mm)
-    ret.steerRatio = 16.8
+    ret.centerToFront = ret.wheelbase * 0.4
+    # no rear steering, at least on the listed cars above
     ret.steerRatioRear = 0.
-    ret.centerToFront = ret.wheelbase * 0.49 # wild guess
+    ret.steerControlType = car.CarParams.SteerControlType.torque
+
+    #ret.lateralTuning.init('lqr')
+    #ret.lateralTuning.lqr.scale = 1975.0
+    #ret.lateralTuning.lqr.ki = 0.032
+    #ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+    #ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+    #ret.lateralTuning.lqr.c = [1., 0.]
+    #ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
+    #ret.lateralTuning.lqr.l =  [0.3233671, 0.3185757]
+    #ret.lateralTuning.lqr.dcGain = 0.002237852961363602
+
+    tire_stiffness_factor = 1.
+    ret.maxSteeringAngleDeg = 1000.
+
+    # lateral
     ret.lateralTuning.init('lqr')
 
-    ret.lateralTuning.lqr.scale = 1975.0
-    ret.lateralTuning.lqr.ki = 0.032
+    ret.lateralTuning.lqr.scale = 1550.
+    ret.lateralTuning.lqr.ki = 0.01
+    ret.lateralTuning.lqr.dcGain = 0.0027
+
     ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
     ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
     ret.lateralTuning.lqr.c = [1., 0.]
-    ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
-    ret.lateralTuning.lqr.l =  [0.3233671, 0.3185757]
-    ret.lateralTuning.lqr.dcGain = 0.002237852961363602
+    ret.lateralTuning.lqr.k = [-110., 451.]
+    ret.lateralTuning.lqr.l = [0.33, 0.318]
+
+    ret.steerRatio = 16.5
+    ret.steerActuatorDelay = 0.1
+    ret.steerLimitTimer = 2.5
+    ret.steerRateCost = 0.35
+    ret.steerMaxBP = [0.]
+    ret.steerMaxV = [2.]
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
