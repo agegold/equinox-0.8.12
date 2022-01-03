@@ -95,11 +95,11 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.lqr.dcGain = 0.002237852961363602
 
     ret.steerRatio = 16.8
-    ret.steerActuatorDelay = 0.1925
+    ret.steerActuatorDelay = 0.0
     ret.steerLimitTimer = 2.5
-    ret.steerRateCost = 0.3625 # def : 2.0
+    ret.steerRateCost = 0.5 # def : 2.0
     ret.steerMaxBP = [0.]
-    ret.steerMaxV = [1.5]
+    ret.steerMaxV = [1.1]
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
