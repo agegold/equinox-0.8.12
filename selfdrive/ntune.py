@@ -163,9 +163,6 @@ class nTune():
   def checkValidISCC(self):
     updated = False
 
-    if self.checkValue("adaptiveCruise", 0, 1, 1):
-      updated = True
-
     # 사용 안함
     if self.checkValue("sccGasFactor", 0.5, 1.5, 1.0):
       updated = True
@@ -183,7 +180,7 @@ class nTune():
     if self.checkValue("longitudinalActuatorDelayUpperBound", 0.1, 1.5, 0.2):
       updated = True
 
-    if self.checkValue("distanceGap", 0, 4, 0):
+    if self.checkValue("distanceGap", 0, 5, 0):
       updated = True
 
     return updated

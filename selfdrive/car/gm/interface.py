@@ -7,7 +7,6 @@ from selfdrive.car.gm.values import CAR, CruiseButtons, AccState, CarControllerP
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, get_safety_config
 from selfdrive.car.interfaces import CarInterfaceBase
 from common.params import Params
-from selfdrive.psk_control.psk_control import toggleAcc
 
 GearShifter = car.CarState.GearShifter
 ButtonType = car.CarState.ButtonEvent.Type
