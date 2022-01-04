@@ -122,7 +122,7 @@ class CarInterface(CarInterfaceBase):
 
     # Neokii
     ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
-    ret.longitudinalTuning.kpV = [1.25, 0.94, 0.8, 0.48]
+    ret.longitudinalTuning.kpV = [1.27, 0.94, 0.8, 0.48]
     ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
     ret.longitudinalTuning.kiV = [0.18, 0.12]
     ret.longitudinalActuatorDelayLowerBound = 0.15
