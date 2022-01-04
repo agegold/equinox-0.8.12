@@ -17,7 +17,7 @@ from selfdrive.ntune import ntune_common_get, ntune_common_enabled
 LON_MPC_STEP = 0.2  # first step is 0.2s
 AWARENESS_DECEL = -0.2  # car smoothly decel at .2m/s^2 when user is distracted
 A_CRUISE_MIN = -1.2
-A_CRUISE_MAX_VALS = [1.2, 1.2, 0.8, 0.6]
+A_CRUISE_MAX_VALS = [1.2, 1.1, 0.8, 0.6]
 A_CRUISE_MAX_BP = [0., 15., 25., 40.]
 
 # Lookup table for turns
@@ -71,7 +71,7 @@ class Planner:
     prev_accel_constraint = True
     if long_control_state == LongCtrlState.off or sm['carState'].gasPressed:
       self.v_desired = v_ego
-      self.a_desired = a_ego
+      self.a_desired = 0.0   # set accel 0 when not active
       # Smoothly changing between accel trajectory is only relevant when OP is driving
       prev_accel_constraint = False
 

@@ -243,6 +243,7 @@ class Controls:
         return radar.leadOne
       return None
 
+
   def get_long_lead_safe_speed(self, vEgo, sm, CS):
       if CS.adaptiveCruise:
         lead = self.get_lead(sm)
@@ -256,7 +257,7 @@ class Controls:
             t = d / lead.vRel
             accel = -(lead.vRel / t) * self.speed_conv_to_clu
             # 속도를 증가하는 속도를 Delay 한다. -> 속도를 더 지속적으로 낮춘다.
-            accel *= 0.001
+            accel *= 1.2
 
             if accel < 0.:
               # target_speed = vEgo + accel  # accel 값은 1키로씩 상승한다.
@@ -342,15 +343,15 @@ class Controls:
         self.slowing_down = False
 
       # 안전거리 활성화
-      #lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
-      #if lead_speed >= self.min_set_speed_clu:
-        #  if lead_speed < max_speed_clu:
-        #  max_speed_clu = min(max_speed_clu, lead_speed)
-        #  if not self.limited_lead:
-        #    self.max_speed_clu = vEgo + 3.
-      #    self.limited_lead = True
-      #else:
-      #  self.limited_lead = False
+      lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
+      if lead_speed >= self.min_set_speed_clu:
+          if lead_speed < max_speed_clu:
+            max_speed_clu = min(max_speed_clu, lead_speed)
+            if not self.limited_lead:
+              self.max_speed_clu = vEgo + 3.
+              self.limited_lead = True
+      else:
+        self.limited_lead = False
 
       self.update_max_speed(int(max_speed_clu + 0.5), CS)
       # print("update_max_speed() value : ", self.max_speed_clu)

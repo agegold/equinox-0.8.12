@@ -180,7 +180,7 @@ class nTune():
     if self.checkValue("longitudinalActuatorDelayUpperBound", 0.1, 1.5, 0.2):
       updated = True
 
-    if self.checkValue("distanceGap", 0, 5, 0):
+    if self.checkValue("distanceGap", 0, 4, 0):
       updated = True
 
     return updated
