@@ -46,7 +46,7 @@ class LatControlLQR():
 
     return self.sat_count > self.sat_limit
 
-  def update(self, active, CS, CP, VM, params, last_actuators, desired_curvature, desired_curvature_rate):
+  def update(self, active, CS, CP, VM, params, last_actuators, desired_curvature):
     self.tune.check()
     lqr_log = log.ControlsState.LateralLQRState.new_message()
 
