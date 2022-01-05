@@ -343,15 +343,16 @@ class Controls:
         self.slowing_down = False
 
       # 안전거리 활성화
-      lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
-      if lead_speed >= self.min_set_speed_clu:
-          if lead_speed < max_speed_clu:
-            max_speed_clu = min(max_speed_clu, lead_speed)
-            if not self.limited_lead:
-              self.max_speed_clu = vEgo + 3.
-              self.limited_lead = True
-      else:
-        self.limited_lead = False
+      if ntune_scc_get('leadSafe') == 1:
+        lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
+        if lead_speed >= self.min_set_speed_clu:
+            if lead_speed < max_speed_clu:
+              max_speed_clu = min(max_speed_clu, lead_speed)
+              if not self.limited_lead:
+                self.max_speed_clu = vEgo + 3.
+                self.limited_lead = True
+        else:
+          self.limited_lead = False
 
       self.update_max_speed(int(max_speed_clu + 0.5), CS)
       # print("update_max_speed() value : ", self.max_speed_clu)
@@ -627,8 +628,6 @@ class Controls:
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if CS.adaptiveCruise:
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
-      if CS.regenPressed:
-        self.v_cruise_kph = update_v_cruise_regen(CS.vEgo, self.v_cruise_kph, CS.regenPressed, self.enabled)
     elif not CS.adaptiveCruise and CS.cruiseState.enabled:
       self.v_cruise_kph = 30
 
