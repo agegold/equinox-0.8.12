@@ -5,6 +5,8 @@ from common.numpy_fast import clip
 from common.realtime import DT_CTRL
 from cereal import log
 from selfdrive.controls.lib.drive_helpers import get_steer_max
+from selfdrive.ntune import nTune
+
 
 class LatControlLQR():
   def __init__(self, CP):
@@ -26,6 +28,7 @@ class LatControlLQR():
     self.sat_limit = CP.steerLimitTimer
 
     self.reset()
+    self.tune = nTune(CP, self)
 
   def reset(self):
     self.i_lqr = 0.0
@@ -43,16 +46,18 @@ class LatControlLQR():
 
     return self.sat_count > self.sat_limit
 
-  def update(self, active, CS, CP, VM, params, desired_curvature, desired_curvature_rate):
+  def update(self, active, CS, CP, VM, params, last_actuators, desired_curvature, desired_curvature_rate):
+    self.tune.check()
     lqr_log = log.ControlsState.LateralLQRState.new_message()
 
     steers_max = get_steer_max(CP, CS.vEgo)
-    torque_scale = (0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
+    #torque_scale = (0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
+    torque_scale = (0.13 + CS.vEgo / 60.0)**0.8
 
     # Subtract offset. Zero angle should correspond to zero torque
     steering_angle_no_offset = CS.steeringAngleDeg - params.angleOffsetAverageDeg
 
-    desired_angle = math.degrees(VM.get_steer_from_curvature(-desired_curvature, CS.vEgo))
+    desired_angle = math.degrees(VM.get_steer_from_curvature(-desired_curvature, CS.vEgo, params.roll))
 
     instant_offset = params.angleOffsetDeg - params.angleOffsetAverageDeg
     desired_angle += instant_offset  # Only add offset that originates from vehicle model errors
@@ -63,7 +68,7 @@ class LatControlLQR():
     e = steering_angle_no_offset - angle_steers_k
     self.x_hat = self.A.dot(self.x_hat) + self.B.dot(CS.steeringTorqueEps / torque_scale) + self.L.dot(e)
 
-    if CS.vEgo < 0.3 or not active or not CS.lkasEnable:
+    if CS.vEgo < 0.3 or not active:
       lqr_log.active = False
       lqr_output = 0.
       output_steer = 0.

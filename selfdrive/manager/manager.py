@@ -41,6 +41,7 @@ def manager_init():
     ("HasAcceptedTerms", "0"),
     ("OpenpilotEnabledToggle", "1"),
 
+    ("LaneChangeEnabled", "0"),
     ("AutoLaneChangeEnabled", "0"),
     ("PrebuiltEnabled", "0"),
 

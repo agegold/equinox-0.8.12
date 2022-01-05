@@ -1,8 +1,10 @@
+import math
 from cereal import car
 from common.numpy_fast import clip, interp
 from common.realtime import DT_MDL
 from selfdrive.config import Conversions as CV
 from selfdrive.modeld.constants import T_IDXS
+from selfdrive.ntune import ntune_common_get
 
 ButtonType = car.CarState.ButtonEvent.Type
 ButtonPrev = ButtonType.unknown
@@ -10,7 +12,7 @@ ButtonCnt = 0
 LongPressed = False
 
 # kph
-V_CRUISE_MAX = 150
+V_CRUISE_MAX = 145
 V_CRUISE_MIN = 30
 V_CRUISE_DELTA_MI = 5 * CV.MPH_TO_KPH
 V_CRUISE_DELTA_KM = 10
@@ -23,6 +25,17 @@ CAR_ROTATION_RADIUS = 0.0
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
 MAX_CURVATURE_RATES = [0.03762194918267951, 0.003441203371932992]
 MAX_CURVATURE_RATE_SPEEDS = [0, 35]
+
+CRUISE_LONG_PRESS = 50
+CRUISE_NEAREST_FUNC = {
+  car.CarState.ButtonEvent.Type.accelCruise: math.ceil,
+  car.CarState.ButtonEvent.Type.decelCruise: math.floor,
+}
+CRUISE_INTERVAL_SIGN = {
+  car.CarState.ButtonEvent.Type.accelCruise: +1,
+  car.CarState.ButtonEvent.Type.decelCruise: -1,
+}
+
 
 class MPC_COST_LAT:
   PATH = 1.0
@@ -80,7 +93,7 @@ def update_v_cruise(v_cruise_kph, buttonEvents, enabled, metric):
 def initialize_v_cruise(v_ego, buttonEvents, v_cruise_last):
   for b in buttonEvents:
     # 250kph or above probably means we never had a set speed
-    if b.type == ButtonType.accelCruise and v_cruise_last < 250:
+    if b.type == car.CarState.ButtonEvent.Type.accelCruise and v_cruise_last < 250:
       return v_cruise_last
 
   return int(round(clip(v_ego * CV.MS_TO_KPH, V_CRUISE_ENABLE_MIN, V_CRUISE_MAX)))
@@ -93,7 +106,7 @@ def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
     curvature_rates = [0.0 for i in range(CONTROL_N)]
 
   # TODO this needs more thought, use .2s extra for now to estimate other delays
-  delay = CP.steerActuatorDelay + .2
+  delay = ntune_common_get('steerActuatorDelay') + .2
   current_curvature = curvatures[0]
   psi = interp(delay, T_IDXS[:CONTROL_N], psis)
   desired_curvature_rate = curvature_rates[0]
@@ -106,9 +119,9 @@ def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
 
   max_curvature_rate = interp(v_ego, MAX_CURVATURE_RATE_SPEEDS, MAX_CURVATURE_RATES)
   safe_desired_curvature_rate = clip(desired_curvature_rate,
-                                     -max_curvature_rate,
-                                     max_curvature_rate)
+                                          -max_curvature_rate,
+                                          max_curvature_rate)
   safe_desired_curvature = clip(desired_curvature,
-                                current_curvature - max_curvature_rate/DT_MDL,
-                                current_curvature + max_curvature_rate/DT_MDL)
+                                     current_curvature - max_curvature_rate * DT_MDL,
+                                     current_curvature + max_curvature_rate * DT_MDL)
   return safe_desired_curvature, safe_desired_curvature_rate
