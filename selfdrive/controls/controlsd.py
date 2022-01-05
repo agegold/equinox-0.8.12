@@ -426,6 +426,8 @@ class Controls:
       if (CS.leftBlindspot and direction == LaneChangeDirection.left) or \
          (CS.rightBlindspot and direction == LaneChangeDirection.right):
         self.events.add(EventName.laneChangeBlocked)
+      elif self.sm['lateralPlan'].autoLaneChangeEnabled and self.sm['lateralPlan'].autoLaneChangeTimer > 0:
+        self.events.add(EventName.autoLaneChange)
       else:
         if direction == LaneChangeDirection.left:
           self.events.add(EventName.preLaneChangeLeft)
@@ -467,7 +469,7 @@ class Controls:
 
     if not self.sm['liveParameters'].valid:
       self.events.add(EventName.vehicleModelInvalid)
-    if not self.sm['lateralPlan'].mpcSolutionValid:
+    if not self.sm['lateralPlan'].mpcSolutionValid and not (EventName.turningIndicatorOn in self.events.names):
       self.events.add(EventName.plannerError)
     if not self.sm['liveLocationKalman'].sensorsOK and not NOSENSOR:
       if self.sm.frame > 5 / DT_CTRL:  # Give locationd some time to receive all the inputs
@@ -484,7 +486,7 @@ class Controls:
       # Check for mismatch between openpilot and car's PCM
       cruise_mismatch = CS.cruiseState.enabled and (not self.enabled or not self.CP.pcmCruise)
       self.cruise_mismatch_counter = self.cruise_mismatch_counter + 1 if cruise_mismatch else 0
-      if self.cruise_mismatch_counter > int(3. / DT_CTRL):
+      if self.cruise_mismatch_counter > int(1. / DT_CTRL):
         self.events.add(EventName.cruiseMismatch)
 
     # Check for FCW
@@ -652,7 +654,7 @@ class Controls:
         if self.state == State.enabled:
           if self.events.any(ET.SOFT_DISABLE):
             self.state = State.softDisabling
-            self.soft_disable_timer = int(SOFT_DISABLE_TIME / DT_CTRL)
+            self.soft_disable_timer = int(0.5 / DT_CTRL)
             self.current_alert_types.append(ET.SOFT_DISABLE)
 
         # SOFT DISABLING
@@ -768,8 +770,9 @@ class Controls:
 
       if len(lat_plan.dPathPoints):
         # Check if we deviated from the path
-        left_deviation = actuators.steer > 0 and lat_plan.dPathPoints[0] < -0.115
-        right_deviation = actuators.steer < 0 and lat_plan.dPathPoints[0] > 0.115
+        # TODO use desired vs actual curvature
+        left_deviation = actuators.steer > 0 and lat_plan.dPathPoints[0] < -0.20
+        right_deviation = actuators.steer < 0 and lat_plan.dPathPoints[0] > 0.20
 
         if left_deviation or right_deviation:
           self.events.add(EventName.steerSaturated)

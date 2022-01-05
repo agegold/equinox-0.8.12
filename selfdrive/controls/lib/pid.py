@@ -1,7 +1,7 @@
 import numpy as np
-from common.numpy_fast import clip, interp
 from numbers import Number
-from selfdrive.config import Conversions as CV
+
+from common.numpy_fast import clip, interp
 
 def apply_deadzone(error, deadzone):
   if error > deadzone:
@@ -13,10 +13,11 @@ def apply_deadzone(error, deadzone):
   return error
 
 class PIController():
-  def __init__(self, k_p, k_i, k_f=1., pos_limit=None, neg_limit=None, rate=100, sat_limit=0.8):
+  def __init__(self, k_p, k_i, k_f=1., pos_limit=None, neg_limit=None, rate=100, sat_limit=0.8, i_decay_tau=100):
     self._k_p = k_p  # proportional gain
     self._k_i = k_i  # integral gain
     self.k_f = k_f   # feedforward gain
+    self.i_decay_factor = float(np.exp(-1.0 / (rate * i_decay_tau + 1e-6)))
     if isinstance(self._k_p, Number):
       self._k_p = [[0], [self._k_p]]
     if isinstance(self._k_i, Number):
@@ -81,9 +82,8 @@ class PIController():
         self.i = i
 
     control = self.p + self.f + self.i
+    self.i = self.i_decay_factor * self.i
     self.saturated = self._check_saturation(control, check_saturation, error)
 
     self.control = clip(control, self.neg_limit, self.pos_limit)
     return self.control
-
-

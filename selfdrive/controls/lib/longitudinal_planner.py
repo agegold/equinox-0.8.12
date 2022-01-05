@@ -12,12 +12,11 @@ from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc
 from selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import T_IDXS as T_IDXS_MPC
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX, CONTROL_N
 from selfdrive.swaglog import cloudlog
-from selfdrive.ntune import ntune_common_get, ntune_common_enabled
 
 LON_MPC_STEP = 0.2  # first step is 0.2s
 AWARENESS_DECEL = -0.2  # car smoothly decel at .2m/s^2 when user is distracted
 A_CRUISE_MIN = -1.2
-A_CRUISE_MAX_VALS = [1.2, 1.1, 0.8, 0.6]
+A_CRUISE_MAX_VALS = [1.2, 1.18, 0.8, 0.6]
 A_CRUISE_MAX_BP = [0., 15., 25., 40.]
 
 # Lookup table for turns
@@ -65,13 +64,20 @@ class Planner:
     v_cruise_kph = min(v_cruise_kph, V_CRUISE_MAX)
     v_cruise = v_cruise_kph * CV.KPH_TO_MS
 
+    # neokii
+    #if not self.use_cluster_speed:
+    vCluRatio = sm['carState'].vCluRatio
+    if vCluRatio > 0.5:
+      v_cruise *= vCluRatio
+      v_cruise = int(v_cruise * CV.MS_TO_KPH) * CV.KPH_TO_MS
+
     long_control_state = sm['controlsState'].longControlState
     force_slow_decel = sm['controlsState'].forceDecel
 
     prev_accel_constraint = True
     if long_control_state == LongCtrlState.off or sm['carState'].gasPressed:
       self.v_desired = v_ego
-      self.a_desired = 0.0   # set accel 0 when not active
+      self.a_desired = 0.0 #a_ego
       # Smoothly changing between accel trajectory is only relevant when OP is driving
       prev_accel_constraint = False
 

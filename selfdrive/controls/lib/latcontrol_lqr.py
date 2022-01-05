@@ -6,7 +6,6 @@ from common.realtime import DT_CTRL
 from cereal import log
 from selfdrive.controls.lib.drive_helpers import get_steer_max
 
-
 class LatControlLQR():
   def __init__(self, CP):
     self.scale = CP.lateralTuning.lqr.scale

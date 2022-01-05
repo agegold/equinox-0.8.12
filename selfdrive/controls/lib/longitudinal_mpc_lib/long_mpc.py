@@ -36,7 +36,7 @@ X_EGO_COST = 0.
 V_EGO_COST = 0.
 A_EGO_COST = 0.
 J_EGO_COST = 5.0
-A_CHANGE_COST = .2
+A_CHANGE_COST = .125
 DANGER_ZONE_COST = 100.
 CRASH_DISTANCE = .5
 LIMIT_COST = 1e6
@@ -213,7 +213,7 @@ class LongitudinalMpc():
     self.solver = AcadosOcpSolverFast('long', N, EXPORT_DIR)
     self.v_solution = [0.0 for i in range(N+1)]
     self.a_solution = [0.0 for i in range(N+1)]
-    self.prev_a = self.a_solution
+    self.prev_a = np.array(self.a_solution)
     self.j_solution = [0.0 for i in range(N)]
     self.yref = np.zeros((N+1, COST_DIM))
     for i in range(N):
@@ -381,8 +381,8 @@ class LongitudinalMpc():
     x_obstacle = 1e5*np.ones((N+1))
     self.params = np.concatenate([self.accel_limit_arr,
                              x_obstacle[:,None],
-                             self.prev_a,
-                             np.full((N+1,1), self.param_tr)], axis=1)
+                             self.prev_a[:,None]],
+                             np.full((N+1,1), self.param_tr), axis=1)
     self.run()
 
 
@@ -401,14 +401,13 @@ class LongitudinalMpc():
     self.a_solution = self.x_sol[:,2]
     self.j_solution = self.u_sol[:,0]
 
-    self.prev_a = interp(T_IDXS + 0.05, T_IDXS, self.a_solution)
+    self.prev_a = np.interp(T_IDXS + 0.05, T_IDXS, self.a_solution)
 
     t = sec_since_boot()
     if self.solution_status != 0:
       if t > self.last_cloudlog_t + 5.0:
         self.last_cloudlog_t = t
-        cloudlog.warning("Long mpc reset, solution_status: %s" % (
-                          self.solution_status))
+        cloudlog.warning(f"Long mpc reset, solution_status: {self.solution_status}")
       self.reset()
 
 
