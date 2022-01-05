@@ -75,6 +75,14 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "../assets/offroad/icon_ldws.png",
     },
     {
+     "LaneChangeEnabled",
+     //"Enable Lane Change Assist",
+     //"Perform assisted lane changes with openpilot by checking your surroundings for safety, activating the turn signal and gently nudging the steering wheel towards your desired lane. openpilot is not capable of checking if a lane change is safe. You must continuously observe your surroundings to use this feature.",
+     "차선변경 지원 활성화",
+     "Openpilot으로 주변의 안전을 확인하고 방향 지시등을 활성화하고 스티어링 휠을 원하는 차선으로 부드럽게 움직여 보조 차선 변경을 수행하십시오. openpilot은 차선 변경이 안전한지 확인할 수 없습니다. 이 기능을 사용하려면 주변을 지속적으로 관찰해야 합니다.",
+     "../assets/offroad/icon_lca.png",
+    },
+    {
      "AutoLaneChangeEnabled",
      //"Enable AutoLaneChange",
      //"Operation of the turn signal at 60㎞/h speed will result in a short change of the vehicle",
