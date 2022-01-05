@@ -183,6 +183,9 @@ class nTune():
     if self.checkValue("distanceGap", 0, 4, 0):
       updated = True
 
+    if self.checkValue("leadSafe", 0, 1, 0):
+      updated = True
+
     return updated
 
   def updateLQR(self):

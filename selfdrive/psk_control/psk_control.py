@@ -11,6 +11,7 @@ import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
+LEAD_SAFE = ntune_scc_get('leadSafe')
 DISTANCE_GAP = ntune_scc_get('distanceGap')
 SCC_GAS_FACTOR = ntune_scc_get('sccGasFactor')
 SCC_BRAKE_FACTOR = ntune_scc_get('sccBrakeFactor')
@@ -23,7 +24,8 @@ CONF_SCC_FILE = '/data/ntune/scc.json'
 @app.route('/')
 def index():
     return render_template('openpilot_control.html',
-                            gapParam = DISTANCE_GAP)
+                            gapParam = DISTANCE_GAP,
+                            leadParam = LEAD_SAFE)
 
 
 @app.route('/apply', methods=['GET', 'POST'])
@@ -32,7 +34,11 @@ def apply():
         global DISTANCE_GAP
         DISTANCE_GAP = request.form['chk_distance']
 
+        global LEAD_SAFE
+        LEAD_SAFE = request.form['chk_lead_safe']
+
         message = '{\n "distanceGap": DISTANCE_GAP,' \
+                   '\n "leadSafe": LEAD_SAFE,' \
                    '\n "sccGasFactor": SCC_GAS_FACTOR,' \
                    '\n "sccBrakeFactor": SCC_BRAKE_FACTOR,' \
                    '\n "sccCurvatureFactor": SCC_CURVATURE_FACTOR,' \
@@ -43,6 +49,7 @@ def apply():
         #print("message : ", message)
 
         message = message.replace('DISTANCE_GAP', str(DISTANCE_GAP))
+        message = message.replace('LEAD_SAFE', str(LEAD_SAFE))
         message = message.replace('SCC_GAS_FACTOR', str(ntune_scc_get('sccGasFactor')))
         message = message.replace('SCC_BRAKE_FACTOR', str(ntune_scc_get('sccBrakeFactor')))
         message = message.replace('SCC_CURVATURE_FACTOR', str(ntune_scc_get('sccCurvatureFactor')))
@@ -55,7 +62,8 @@ def apply():
         f.close()
 
         return render_template('openpilot_control.html',
-                                gapParam = DISTANCE_GAP)
+                                gapParam = DISTANCE_GAP,
+                                leadParam=LEAD_SAFE)
 
 
 
