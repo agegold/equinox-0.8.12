@@ -95,7 +95,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.lqr.l = [0.22, 0.318]
 
     ret.steerRatio = 16.8
-    ret.steerActuatorDelay = 0.0
+    ret.steerActuatorDelay = 0.1
     ret.steerLimitTimer = 2.5
     ret.steerRateCost = 0.5
     ret.steerMaxBP = [0.]
