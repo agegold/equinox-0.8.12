@@ -660,7 +660,7 @@ class Controls:
     #elif not CS.adaptiveCruise and CS.cruiseState.enabled:
     #  self.v_cruise_kph = 30
 
-    self.update_cruise_buttons(self, CS)
+    self.update_cruise_buttons(CS)
 
     # decrement the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
