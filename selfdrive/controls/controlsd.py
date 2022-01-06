@@ -620,16 +620,47 @@ class Controls:
 
     return self.curve_speed_ms
 
+
+  def update_cruise_buttons(self, CS):  # called by controlds's state_transition
+
+    car_set_speed = CS.cruiseState.speed * CV.MS_TO_KPH
+    is_cruise_enabled = car_set_speed != 0 and car_set_speed != 255 and CS.cruiseState.enabled and self.CP.pcmCruise
+
+    if is_cruise_enabled:
+      if CS.adaptiveCruise:
+        v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+      else:
+        v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled, self.is_metric)
+    else:
+      v_cruise_kph = 0
+
+    if self.is_cruise_enabled != is_cruise_enabled:
+      self.is_cruise_enabled = is_cruise_enabled
+
+      if self.is_cruise_enabled:
+        v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+      else:
+        v_cruise_kph = 0
+
+      self.LoC.reset(v_pid=CS.vEgo)
+
+    self.v_cruise_kph = v_cruise_kph
+
+
+
+
   def state_transition(self, CS):
     """Compute conditional state transitions and execute actions on state transitions"""
 
     self.v_cruise_kph_last = self.v_cruise_kph
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
-    if CS.adaptiveCruise:
-      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
-    elif not CS.adaptiveCruise and CS.cruiseState.enabled:
-      self.v_cruise_kph = 30
+    #if CS.adaptiveCruise:
+    #  self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
+    #elif not CS.adaptiveCruise and CS.cruiseState.enabled:
+    #  self.v_cruise_kph = 30
+
+    self.update_cruise_buttons(self, CS)
 
     # decrement the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
