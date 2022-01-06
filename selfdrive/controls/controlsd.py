@@ -656,7 +656,7 @@ class Controls:
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if CS.adaptiveCruise:
-      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
+      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled, self.is_metric)
     elif not CS.adaptiveCruise and CS.cruiseState.enabled:
       self.v_cruise_kph = 30
 
