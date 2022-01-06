@@ -42,13 +42,13 @@ def manager_init():
     ("OpenpilotEnabledToggle", "1"),
 
     ("LaneChangeEnabled", "0"),
-    ("AutoLaneChangeEnabled", "0"),
+    ("AutoLaneChangeEnabled", "1"),
     ("PrebuiltEnabled", "0"),
 
     #UI things
-    ("ShowDebugUI", "0"),
+    ("ShowDebugUI", "1"),
     ("ShowCpuTempUI", "0"),
-    ("ShowBattLevelUI", "0"),
+    ("ShowBattLevelUI", "1"),
 
     #Lateral Control Selection
     #("INDI_Selected", "0"),

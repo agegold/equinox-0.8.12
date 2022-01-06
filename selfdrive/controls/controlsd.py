@@ -147,14 +147,8 @@ class Controls:
     self.LoC = LongControl(self.CP)
     self.VM = VehicleModel(self.CP)
 
-    if self.CP.steerControlType == car.CarParams.SteerControlType.angle:
-      self.LaC = LatControlAngle(self.CP)
-    elif self.CP.lateralTuning.which() == 'pid':
-      self.LaC = LatControlPID(self.CP, self.CI)
-    elif self.CP.lateralTuning.which() == 'indi':
-      self.LaC = LatControlINDI(self.CP)
-    elif self.CP.lateralTuning.which() == 'lqr':
-      self.LaC = LatControlLQR(self.CP)
+    self.LaC = LatControlLQR(self.CP)
+    self.lateral_control_select = 2
 
     self.initialized = False
     self.state = State.disabled
@@ -734,12 +728,12 @@ class Controls:
     # Update VehicleModel
     params = self.sm['liveParameters']
     x = max(params.stiffnessFactor, 0.1)
-    #sr = max(params.steerRatio, 0.1)
+    sr = max(params.steerRatio, 0.1)
 
-    if ntune_common_enabled('useLiveSteerRatio'):
-      sr = max(params.steerRatio, 0.1)
-    else:
-      sr = max(ntune_common_get('steerRatio'), 0.1)
+    #if ntune_common_enabled('useLiveSteerRatio'):
+    #  sr = max(params.steerRatio, 0.1)
+    #else:
+    #  sr = max(ntune_common_get('steerRatio'), 0.1)
 
     self.VM.update_params(x, sr)
 
@@ -756,6 +750,9 @@ class Controls:
 
     if not self.active:
       self.LaC.reset()
+      self.LoC.reset(v_pid=CS.vEgo)
+
+    if not CS.adaptiveCruise:
       self.LoC.reset(v_pid=CS.vEgo)
 
     if not self.joystick_mode:
@@ -942,6 +939,7 @@ class Controls:
     controlsState.roadLimitSpeedLeftDist = left_dist
 
     # STEER
+    controlsState.lateralControlSelect = int(self.lateral_control_select)
     controlsState.angleSteers = steer_angle_without_offset * CV.RAD_TO_DEG
     controlsState.steerRatio = self.VM.sR
     controlsState.steerRateCost = ntune_common_get('steerRateCost')
