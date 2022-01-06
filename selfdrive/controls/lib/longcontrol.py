@@ -91,7 +91,7 @@ class LongControl():
     self.long_control_state = long_control_state_trans(CP, active, self.long_control_state, CS.vEgo,
                                                        v_target_future, self.v_pid, CS.brakePressed, CS.cruiseState.standstill, radarState)
 
-    if self.long_control_state == LongCtrlState.off or CS.gasPressed:
+    if self.long_control_state == LongCtrlState.off or CS.gasPressed or CS.brakePressed:
       self.reset(CS.vEgo)
       output_accel = 0.
 
