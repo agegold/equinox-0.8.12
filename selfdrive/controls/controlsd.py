@@ -655,12 +655,12 @@ class Controls:
     self.v_cruise_kph_last = self.v_cruise_kph
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
-    #if CS.adaptiveCruise:
-    #  self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
-    #elif not CS.adaptiveCruise and CS.cruiseState.enabled:
-    #  self.v_cruise_kph = 30
+    if CS.adaptiveCruise:
+      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.button_timers, self.enabled, self.is_metric)
+    elif not CS.adaptiveCruise and CS.cruiseState.enabled:
+      self.v_cruise_kph = 30
 
-    self.update_cruise_buttons(CS)
+    #self.update_cruise_buttons(CS)
 
     # decrement the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
