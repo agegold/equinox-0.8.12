@@ -183,7 +183,10 @@ class nTune():
     if self.checkValue("distanceGap", 0, 4, 0):
       updated = True
 
-    if self.checkValue("leadSafe", 0, 1, 0):
+    #if self.checkValue("leadSafe", 0, 1, 0):
+    #  updated = True
+
+    if self.checkValue("adaptiveCruise", 0, 1, 1):
       updated = True
 
     return updated

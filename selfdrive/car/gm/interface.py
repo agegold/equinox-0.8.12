@@ -7,6 +7,7 @@ from selfdrive.car.gm.values import CAR, CruiseButtons, AccState, CarControllerP
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, get_safety_config
 from selfdrive.car.interfaces import CarInterfaceBase
 from common.params import Params
+from selfdrive.psk_control.psk_control import toggleAcc
 
 GearShifter = car.CarState.GearShifter
 ButtonType = car.CarState.ButtonEvent.Type
@@ -203,10 +204,14 @@ class CarInterface(CarInterfaceBase):
             self.CS.enable_lkas = False
             events.add(EventName.buttonEnable)
             break
-          if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
-            self.CS.adaptive_Cruise = False
-            self.CS.enable_lkas = False
-            events.add(EventName.buttonCancel)
+          #if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
+          #  self.CS.adaptive_Cruise = False
+          #  self.CS.enable_lkas = False
+          #  events.add(EventName.buttonCancel)
+          #  break
+          if (b.type == ButtonType.cancel and b.pressed):
+            self.CS.adaptive_Cruise = toggleAcc()
+            events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.altButton3 and b.pressed) : #and self.CS.adaptive_Cruise
             self.CS.adaptive_Cruise = False

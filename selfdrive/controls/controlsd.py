@@ -337,16 +337,16 @@ class Controls:
         self.slowing_down = False
 
       # 안전거리 활성화
-      if ntune_scc_get('leadSafe') == 1:
-        lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
-        if lead_speed >= self.min_set_speed_clu:
-            if lead_speed < max_speed_clu:
-              max_speed_clu = min(max_speed_clu, lead_speed)
-              if not self.limited_lead:
-                self.max_speed_clu = vEgo + 3.
-                self.limited_lead = True
-        else:
-          self.limited_lead = False
+      #if ntune_scc_get('leadSafe') == 1:
+        #  lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
+        #if lead_speed >= self.min_set_speed_clu:
+        #    if lead_speed < max_speed_clu:
+        #      max_speed_clu = min(max_speed_clu, lead_speed)
+        #      if not self.limited_lead:
+        #        self.max_speed_clu = vEgo + 3.
+        #        self.limited_lead = True
+        #else:
+      #  self.limited_lead = False
 
       self.update_max_speed(int(max_speed_clu + 0.5), CS)
       # print("update_max_speed() value : ", self.max_speed_clu)

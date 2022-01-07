@@ -88,13 +88,6 @@ input[type=text] {
 			document.frm1.chk_distance[4].checked = true;
 		}
 
-		var lead = {{leadParam}};
-		if( lead == 0 ) {
-			document.frm1.chk_lead_safe[0].checked = true;
-		}else if( lead == 1 ) {
-			document.frm1.chk_lead_safe[1].checked = true;
-		}
-
 	}
 
     function apply_ok() {
@@ -171,22 +164,13 @@ input[type=text] {
 		<h3>
 		<p>
 			<font color="GREEN">차간 거리</font>
-			<br><input type="radio" name="chk_distance" value=0>AUTO &nbsp;
+			<br><input type="radio" name="chk_distance" value=0>AUTO
 			<br><input type="radio" name="chk_distance" value=1>&nbsp;1 (1.2 s)
 			<br><input type="radio" name="chk_distance" value=2>&nbsp;2 (1.35 s)
 			<br><input type="radio" name="chk_distance" value=3> 3 (1.5 s)
 			<br><input type="radio" name="chk_distance" value=4> 4 (1.7 s)
 		</p>
 		</h3>
-
-		<h3>
-		<p>
-			<font color="GREEN">안전 주행 모드</font>
-			<br><input type="radio" name="chk_lead_safe" value=0>&nbsp;OFF
-			<br><input type="radio" name="chk_lead_safe" value=1> ON
-		</p>
-		</h3>
-
 
 	</form>
 </body>
