@@ -86,9 +86,9 @@ class CarInterface(CarInterfaceBase):
 
     ret.steerRatio = 16.8
     ret.steerActuatorDelay = 0.1
-    ret.steerRateCost = 0.3625
-    #ret.steerMaxBP = [0.]
-    #ret.steerMaxV = [1.1]
+    ret.steerRateCost = 0.552
+    ret.steerMaxBP = [0.]
+    ret.steerMaxV = [1.5]
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
