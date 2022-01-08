@@ -63,7 +63,7 @@ def apply():
                                 gapParam = DISTANCE_GAP)
 
 
-def toggleAcc(acc):
+def toggleAcc():
     message = '{\n "distanceGap": DISTANCE_GAP,' \
               '\n "adaptiveCruise": ADAPTIVE_CRUISE, ' \
               '\n "sccGasFactor": SCC_GAS_FACTOR,' \
@@ -73,6 +73,11 @@ def toggleAcc(acc):
               '\n "longitudinalActuatorDelayUpperBound": LADUB' \
               '\n }\n'
 
+    acc = ntune_scc_get('adaptiveCruise')
+    if acc == 0:
+        acc = 1
+    elif acc == 1:
+        acc = 0
 
     message = message.replace('DISTANCE_GAP', str(ntune_scc_get('distanceGap')))
     message = message.replace('ADAPTIVE_CRUISE', str(acc))
@@ -86,6 +91,11 @@ def toggleAcc(acc):
     f = open(CONF_SCC_FILE, 'w')
     f.write(message)
     f.close()
+
+    if acc == 0:
+        return False
+    elif acc == 1:
+        return True
 
 def main():
     app.run(host='0.0.0.0', port='7070')
