@@ -197,31 +197,18 @@ class CarInterface(CarInterfaceBase):
           if (b.type == ButtonType.decelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = True
             self.CS.enable_lkas = True
-            toggleAcc(1)
-            events.add(EventName.buttonEnable)
-            break
-          if (b.type == ButtonType.decelCruise and not b.pressed) and self.CS.adaptive_Cruise:
-            self.CS.adaptive_Cruise = False
-            self.CS.enable_lkas = True
-            toggleAcc(0)
             events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.accelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = True
             self.CS.enable_lkas = True
-            toggleAcc(1)
-            events.add(EventName.buttonEnable)
-            break
-          if (b.type == ButtonType.accelCruise and not b.pressed) and self.CS.adaptive_Cruise:
-            self.CS.adaptive_Cruise = False
-            self.CS.enable_lkas = True
-            toggleAcc(0)
             events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = False
-            self.CS.enable_lkas = False
-            events.add(EventName.buttonCancel)
+            toggleAcc(0)
+            self.CS.enable_lkas = True
+            events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
             self.CS.adaptive_Cruise = False
@@ -232,6 +219,12 @@ class CarInterface(CarInterfaceBase):
         # self.CS.enable_lkas = True
         #
         for b in ret.buttonEvents:
+          if (b.type == ButtonType.cancel and b.pressed) and not self.CS.adaptive_Cruise:
+            self.CS.adaptive_Cruise = True
+            toggleAcc(1)
+            self.CS.enable_lkas = True
+            events.add(EventName.buttonEnable)
+            break
           if not self.CS.adaptive_Cruise and (
                   b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
             self.CS.adaptive_Cruise = False
