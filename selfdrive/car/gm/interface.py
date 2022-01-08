@@ -197,34 +197,54 @@ class CarInterface(CarInterfaceBase):
           if (b.type == ButtonType.decelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = True
             self.CS.enable_lkas = True
+            toggleAcc(1)
+            events.add(EventName.buttonEnable)
+            break
+          if (b.type == ButtonType.decelCruise and not b.pressed) and self.CS.adaptive_Cruise:
+            self.CS.adaptive_Cruise = False
+            self.CS.enable_lkas = True
+            toggleAcc(0)
             events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.accelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = True
-            self.CS.enable_lkas = False
+            self.CS.enable_lkas = True
+            toggleAcc(1)
             events.add(EventName.buttonEnable)
             break
-          # if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
-          #  self.CS.adaptive_Cruise = False
-          #  self.CS.enable_lkas = False
-          #  events.add(EventName.buttonCancel)
-          #  break
-          if (b.type == ButtonType.cancel and b.pressed):
-            self.CS.adaptive_Cruise = toggleAcc()
+          if (b.type == ButtonType.accelCruise and not b.pressed) and self.CS.adaptive_Cruise:
+            self.CS.adaptive_Cruise = False
+            self.CS.enable_lkas = True
+            toggleAcc(0)
             events.add(EventName.buttonEnable)
+            break
+          if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
+            self.CS.adaptive_Cruise = False
+            self.CS.enable_lkas = False
+            events.add(EventName.buttonCancel)
             break
           if (b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
             self.CS.adaptive_Cruise = False
             self.CS.enable_lkas = True
             break
+      else:  # lat engage
+        # self.CS.adaptive_Cruise = False
+        # self.CS.enable_lkas = True
+        #
+        for b in ret.buttonEvents:
+          if not self.CS.adaptive_Cruise and (
+                  b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
+            self.CS.adaptive_Cruise = False
+            self.CS.enable_lkas = False
+            break
 
     else:
       if self.CS.main_on:  # wihtout pedal case
-        # self.CS.adaptive_Cruise = False
-        # self.CS.enable_lkas = True
-        self.CS.adaptive_Cruise = True
+        self.CS.adaptive_Cruise = False
         self.CS.enable_lkas = True
-        events.add(EventName.buttonCancel)
+      else:
+        self.CS.adaptive_Cruise = False
+        self.CS.enable_lkas = False
 
 
     ret.events = events.to_msg()
