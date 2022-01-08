@@ -91,9 +91,9 @@ class CarController():
 
     if CS.CP.enableGasInterceptor:
 
-      if not enabled or not CS.adaptive_Cruise or CS.out.vEgo <= 1 / CV.MS_TO_KPH or ntune_scc_get('adaptiveCruise') == 0:
+      if not enabled or not CS.adaptive_Cruise or CS.out.vEgo <= 1 / CV.MS_TO_KPH:
         comma_pedal = 0.
-      elif CS.adaptive_Cruise and CS.out.vEgo > 1 / CV.MS_TO_KPH and ntune_scc_get('adaptiveCruise') == 1:
+      elif CS.adaptive_Cruise and CS.out.vEgo > 1 / CV.MS_TO_KPH:
         # 이것이 없으면 저속에서 너무 공격적입니다.
         gas_mult = interp(CS.out.vEgo, [0., 10.], [0.4, 1.0])
         # apply_gas가 0이면 정확히 0을 보냅니다. 인터셉터는 읽기 값과 apply_gas 사이의 최대값을 보냅니다.
