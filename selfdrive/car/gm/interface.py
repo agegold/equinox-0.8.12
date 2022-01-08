@@ -201,13 +201,16 @@ class CarInterface(CarInterfaceBase):
             break
           if (b.type == ButtonType.accelCruise and not b.pressed) and not self.CS.adaptive_Cruise:
             self.CS.adaptive_Cruise = True
-            self.CS.enable_lkas = True
+            self.CS.enable_lkas = False
             events.add(EventName.buttonEnable)
             break
-          if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
-            self.CS.adaptive_Cruise = False
-            toggleAcc(0)
-            self.CS.enable_lkas = True
+          # if (b.type == ButtonType.cancel and b.pressed) and self.CS.adaptive_Cruise:
+          #  self.CS.adaptive_Cruise = False
+          #  self.CS.enable_lkas = False
+          #  events.add(EventName.buttonCancel)
+          #  break
+          if (b.type == ButtonType.cancel and b.pressed):
+            self.CS.adaptive_Cruise = toggleAcc()
             events.add(EventName.buttonEnable)
             break
           if (b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
@@ -215,16 +218,10 @@ class CarInterface(CarInterfaceBase):
             self.CS.enable_lkas = True
             break
       else:  # lat engage
-        # self.CS.adaptive_Cruise = False
-        # self.CS.enable_lkas = True
-        #
+        self.CS.adaptive_Cruise = False
+        self.CS.enable_lkas = True
+
         for b in ret.buttonEvents:
-          if (b.type == ButtonType.cancel and b.pressed) and not self.CS.adaptive_Cruise:
-            self.CS.adaptive_Cruise = True
-            toggleAcc(1)
-            self.CS.enable_lkas = True
-            events.add(EventName.buttonEnable)
-            break
           if not self.CS.adaptive_Cruise and (
                   b.type == ButtonType.altButton3 and b.pressed):  # and self.CS.adaptive_Cruise
             self.CS.adaptive_Cruise = False
@@ -238,6 +235,27 @@ class CarInterface(CarInterfaceBase):
       else:
         self.CS.adaptive_Cruise = False
         self.CS.enable_lkas = False
+
+    # Added by jc01rho inspired by JangPoo
+    # Main 버튼 누른 상태에서 LKAS 만 활성화
+    if self.CS.main_on and self.CS.enable_lkas and not self.CS.adaptive_Cruise and ret.cruiseState.enabled and ret.gearShifter == GearShifter.drive and ret.vEgo > 2.4 and not ret.brakePressed:
+      if ret.cruiseState.available and not ret.seatbeltUnlatched and not ret.espDisabled and self.flag_pcmEnable_able:
+
+        if self.flag_pcmEnable_initialSet == False:
+          self.initial_pcmEnable_counter = self.initial_pcmEnable_counter + 1
+          if self.initial_pcmEnable_counter > 750:
+            # events.add(EventName.pcmEnable)
+            # self.flag_pcmEnable_initialSet = True
+            self.flag_pcmEnable_able = False
+            self.initial_pcmEnable_counter = 0
+        else:
+          self.flag_pcmEnable_able = False
+          events.add(EventName.buttonEnable)
+          # self.flag_pcmEnable_initialSet = True
+          # self.initial_pcmEnable_counter = 0
+    else:
+      self.flag_pcmEnable_able = True
+    ###
 
 
     ret.events = events.to_msg()
