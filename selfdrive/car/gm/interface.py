@@ -77,18 +77,18 @@ class CarInterface(CarInterfaceBase):
 
         # lateral
         ret.lateralTuning.init('lqr')
-        ret.lateralTuning.lqr.scale = 1975.0
-        ret.lateralTuning.lqr.ki = 0.032
+        ret.lateralTuning.lqr.scale = 1700.0
+        ret.lateralTuning.lqr.ki = 0.03
+        ret.lateralTuning.lqr.dcGain = 0.003
         ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
         ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
         ret.lateralTuning.lqr.c = [1., 0.]
-        ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
-        ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
-        ret.lateralTuning.lqr.dcGain = 0.002237852961363602
+        ret.lateralTuning.lqr.k = [-105.0, 450.0]
+        ret.lateralTuning.lqr.l = [0.22, 0.318]
 
         ret.steerRatio = 16.8
         ret.steerActuatorDelay = 0.1
-        ret.steerRateCost = 0.552
+        ret.steerRateCost = 0.4
         ret.steerMaxBP = [0.]
         ret.steerMaxV = [1.5]
 
@@ -101,38 +101,14 @@ class CarInterface(CarInterfaceBase):
         ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                              tire_stiffness_factor=tire_stiffness_factor)
 
-        # longitudinal
-        # ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 25.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 60.*CV.KPH_TO_MS, 80.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 110.*CV.KPH_TO_MS]
-        # ret.longitudinalTuning.kpV = [1.20, 1.05, 0.81, 0.66, 0.63, 0.57, 0.54, 0.52]
-        # ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-        # ret.longitudinalTuning.kiV = [0.25, 0.12]
-        # ret.longitudinalTuning.deadzoneBP = [0., 30.*CV.KPH_TO_MS]
-        # ret.longitudinalTuning.deadzoneV = [0., 0.10]
-        # ret.longitudinalActuatorDelayLowerBound = 0.13
-        # ret.longitudinalActuatorDelayUpperBound = 0.17
 
-        # Neokii
         ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
-        ret.longitudinalTuning.kpV = [1.3, 1.0, 0.8, 0.48]
+        ret.longitudinalTuning.kpV = [1.6, 1.18, 0.9, 0.78, 0.48]
         ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-        ret.longitudinalTuning.kiV = [0.18, 0.12]
-        ret.longitudinalActuatorDelayLowerBound = 0.15
-        ret.longitudinalActuatorDelayUpperBound = 0.2
+        ret.longitudinalTuning.kiV = [0.1, 0.06]
 
-        # ret.startAccel = -0.8
-        # ret.stopAccel = -4.0
-        # ret.startingAccelRate = 1.6
-        # ret.stoppingDecelRate = 1.5
-        # ret.vEgoStopping = 0.5
-        # ret.vEgoStarting = 0.5
-
-        # Neokii
-        ret.startAccel = -0.8
         ret.stopAccel = -2.5
-        ret.startingAccelRate = 5.0  # brake_travel/s while releasing on restart
         ret.stoppingDecelRate = 0.3  # brake_travel/s while trying to stop
-        ret.vEgoStopping = 0.6
-        ret.vEgoStarting = 0.5
 
         ret.stoppingControl = True
 
