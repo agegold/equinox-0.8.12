@@ -5,7 +5,7 @@ from selfdrive.config import RADAR_TO_CAMERA
 
 # the longer lead decels, the more likely it will keep decelerating
 # TODO is this a good default?
-_LEAD_ACCEL_TAU = 4
+_LEAD_ACCEL_TAU = 3.5
 
 # radar tracks
 SPEED, ACCEL = 0, 1   # Kalman filter states enum
