@@ -110,9 +110,9 @@ class CarController():
 
         at_full_stop = enabled and CS.out.standstill
         near_stop = enabled and (CS.out.vEgo < P.NEAR_STOP_BRAKE_PHASE)
-        print("apply_brake : " + apply_brake)
-        print("near_stop : " + near_stop)
-        print("at_full_stop : " + at_full_stop)
+        print("apply_brake : " , apply_brake)
+        print("near_stop : " , near_stop)
+        print("at_full_stop : ", + at_full_stop)
         can_sends.append(gmcan.create_friction_brake_command(self.packer_ch, CanBus.CHASSIS, apply_brake, idx, near_stop,at_full_stop))
         can_sends.append(create_gas_interceptor_command(self.packer_pt, comma_pedal, idx))
 
