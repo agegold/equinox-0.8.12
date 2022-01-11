@@ -32,8 +32,6 @@ def apply():
         global DISTANCE_GAP
         DISTANCE_GAP = request.form['chk_distance']
 
-        acc = ntune_scc_get('adaptiveCruise')
-
         message = '{\n "distanceGap": DISTANCE_GAP,' \
                    '\n "sccGasFactor": SCC_GAS_FACTOR,' \
                    '\n "sccBrakeFactor": SCC_BRAKE_FACTOR,' \
