@@ -44,6 +44,7 @@ class CarController():
     self.steer_rate_limited = False
     
     self.accel_steady = 0.
+    self.apply_brake = 0
     
     self.params = CarControllerParams()
 
@@ -93,7 +94,7 @@ class CarController():
 
       if not enabled or not CS.adaptive_Cruise or CS.out.vEgo <= 1 / CV.MS_TO_KPH:
         comma_pedal = 0.
-        apply_brake = 0.
+        apply_brake = 0
       elif CS.adaptive_Cruise and CS.out.vEgo > 1 / CV.MS_TO_KPH:
         # 이것이 없으면 저속에서 너무 공격적입니다.
         gas_mult = interp(CS.out.vEgo, [0., 10.], [0.4, 1.0])
