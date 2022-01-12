@@ -52,8 +52,8 @@ def apply():
 
         #print("message : ", message)
 
-        message = message.replace('DISTANCE_GAP', str(DISTANCE_GAP))
-        message = message.replace('ACCEL_PROFILE', str(ACCEL_PROFILE))
+        message = message.replace('DISTANCE_GAP', DISTANCE_GAP)
+        message = message.replace('ACCEL_PROFILE', ACCEL_PROFILE)
         message = message.replace('LEAD_ACCEL_TAU', LEAD_ACCEL_TAU)
         message = message.replace('SCC_GAS_FACTOR', str(ntune_scc_get('sccGasFactor')))
         message = message.replace('SCC_BRAKE_FACTOR', str(ntune_scc_get('sccBrakeFactor')))
@@ -67,7 +67,7 @@ def apply():
         f.close()
 
         return render_template('openpilot_control.html',
-                                accelProfileParam=ACCEL_PROFILE,
+                                accelProfileParam = ACCEL_PROFILE,
                                 gapParam = DISTANCE_GAP,
                                 latParam = LEAD_ACCEL_TAU)
 
