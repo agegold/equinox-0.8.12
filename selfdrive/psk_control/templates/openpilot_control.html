@@ -88,6 +88,9 @@ input[type=text] {
 			document.frm1.chk_distance[4].checked = true;
 		}
 
+		var tau = {{latParam}};
+		document.frm1.lat.value = tau;
+
 	}
 
     function apply_ok() {
@@ -169,6 +172,13 @@ input[type=text] {
 			<br><input type="radio" name="chk_distance" value=2>&nbsp;2 (1.35 s)
 			<br><input type="radio" name="chk_distance" value=3> 3 (1.5 s)
 			<br><input type="radio" name="chk_distance" value=4> 4 (1.7 s)
+		</p>
+		</h3>
+
+		<h3>
+		<p>
+			<font color="GREEN">LEAD ACCEL TAU (1.5 ~)</font>
+			<br><input type="text" name="lat" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)">
 		</p>
 		</h3>
 
