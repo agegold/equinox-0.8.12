@@ -237,10 +237,11 @@ static void ui_draw_bottom_info(UIState *s) {
     const char* lateral_state[] = {"Pid", "Indi", "Lqr"};
 
     snprintf(str, sizeof(str),
-    "[ %s ] Steer Ratio[ %.2f ] Long State[ %s ]",
+    "[ %s ] Steer Ratio[ %.2f ] Long State[ %s ] Lead Accel Tau[ %.1f ]",
     lateral_state[lateralControlState],
     controls_state.getSteerRatio(),
-    long_state[longControlState]
+    long_state[longControlState],
+    controls_state.getLeadAccelTau()
     );
 
     int x = bdr_s * 2;
@@ -418,11 +419,49 @@ static void ui_draw_wifi(UIState *s) {
 }
 
 // face icon bottom left
-static void ui_draw_vision_face(UIState *s) {
+/*static void ui_draw_vision_face(UIState *s) {
   const int radius = 85;
   const int center_x = radius + (bdr_s * 2);
   const int center_y = s->fb_h - (footer_h/2) + 20;
   ui_draw_circle_image(s, center_x, center_y, radius, "driver_face", s->scene.dm_active);
+}*/
+
+static void ui_draw_vision_accel_profile(UIState *s) {
+  auto control_state = (*s->sm)["controlsState"].getControlsState();
+  int accel = control_state.getAccelProfile();
+  if(accel < 0)
+    return;
+
+  const int radius = 85;
+  const int center_x = radius + (bdr_s * 2);
+  const int center_y = s->fb_h - (footer_h/2) + 20;
+
+  NVGcolor color_bg = COLOR_BLACK_ALPHA(255 * 0.1f);
+  nvgBeginPath(s->vg);
+  nvgCircle(s->vg, center_x, center_y, radius);
+  nvgFillColor(s->vg, color_bg);
+  nvgFill(s->vg);
+  NVGcolor textColor = COLOR_WHITE_ALPHA(200);
+  float textSize = 25.f;
+  char str[64];
+
+  if(accel == 0) {
+    snprintf(str, sizeof(str), "DEF");
+    textColor = nvgRGBA(120, 255, 120, 200);
+  } else if(accel == 1) {
+    snprintf(str, sizeof(str), "ECO");
+    textColor = nvgRGBA(120, 255, 120, 200);
+  } else if(accel == 2) {
+    snprintf(str, sizeof(str), "NOR");
+    textColor = nvgRGBA(240, 83, 44, 200);
+  } else if(accel == 3) {
+    snprintf(str, sizeof(str), "SPT");
+    textColor = nvgRGBA(240, 83, 44, 200);
+  }
+
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+  ui_draw_text(s, center_x, center_y-36, "ACCEL", textSize * 1.6f, COLOR_WHITE_ALPHA(200), "sans-bold");
+  ui_draw_text(s, center_x, center_y+22, str, textSize * 2.5f, textColor, "sans-bold");
 }
 
 // scc_gap bottom left + radius
@@ -707,9 +746,10 @@ static void ui_draw_vision(UIState *s) {
   }
   // Set Speed, Current Speed, Status/Events
   ui_draw_vision_header(s);
-  ui_draw_vision_face(s);
+  //ui_draw_vision_face(s);
 
   // ui info add
+  ui_draw_vision_accel_profile(s);
   ui_draw_scc_gap(s);
   ui_draw_brake(s);
   ui_draw_autohold(s);
