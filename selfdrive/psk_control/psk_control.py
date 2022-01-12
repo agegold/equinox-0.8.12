@@ -67,7 +67,7 @@ def apply():
         f.close()
 
         return render_template('openpilot_control.html',
-                                accelProfileParam=ACCEL_PROFILE,
+                                accelProfileParam = ACCEL_PROFILE,
                                 gapParam = DISTANCE_GAP,
                                 latParam = LEAD_ACCEL_TAU)
 
