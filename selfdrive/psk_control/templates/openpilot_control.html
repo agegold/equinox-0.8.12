@@ -88,6 +88,15 @@ input[type=text] {
 			document.frm1.chk_distance[4].checked = true;
 		}
 
+		var accelProfile = {{accelProfileParam}};
+		if( accelProfile == 0 ) {
+			document.frm1.chk_accelProfile[0].checked = true;
+		}else if( accelProfile == 1 ) {
+			document.frm1.chk_accelProfile[1].checked = true;
+		}else if( accelProfile == 2 ) {
+			document.frm1.chk_accelProfile[2].checked = true;
+		}
+
 		var tau = {{latParam}};
 		document.frm1.lat.value = tau;
 
@@ -163,6 +172,16 @@ input[type=text] {
 			<input type="button" value="APPLY" onclick="apply_ok()">
 			<input type="button" value="RESET" onclick="load()">
 		</div>
+
+		<h3>
+		<p>
+			<font color="GREEN">엑셀 모드</font>
+			<br><input type="radio" name="chk_accelProfile" value=0> DEFAULT
+			<br><input type="radio" name="chk_accelProfile" value=1> ECO
+			<br><input type="radio" name="chk_accelProfile" value=2> NORMAL
+			<br><input type="radio" name="chk_accelProfile" value=3> SPORT
+		</p>
+		</h3>
 
 		<h3>
 		<p>
