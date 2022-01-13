@@ -87,10 +87,11 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.lqr.dcGain = 0.002237852961363602
 
         ret.steerRatio = 16.8
-        ret.steerActuatorDelay = 0.3
+        # steerActuatorDelay, steerMaxV 커질수록 인으로 붙고, scale 작을수록 인으로 붙는다.
+        ret.steerActuatorDelay = 0.1
         ret.steerRateCost = 0.4
         ret.steerMaxBP = [0.]
-        ret.steerMaxV = [1.5]
+        ret.steerMaxV = [1.1]
 
         # TODO: get actual value, for now starting with reasonable value for
         # civic and scaling by mass and wheelbase
@@ -102,10 +103,16 @@ class CarInterface(CarInterfaceBase):
                                                                              tire_stiffness_factor=tire_stiffness_factor)
 
 
-        ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
-        ret.longitudinalTuning.kpV = [1.6, 1.18, 0.9, 0.78, 0.48]
-        ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
-        ret.longitudinalTuning.kiV = [0.1, 0.06]
+        #ret.longitudinalTuning.kpBP = [0., 10. * CV.KPH_TO_MS, 20. * CV.KPH_TO_MS, 130. * CV.KPH_TO_MS]
+        #ret.longitudinalTuning.kpV = [1.6, 1.18, 0.9, 0.78, 0.48]
+        #ret.longitudinalTuning.kiBP = [0., 130. * CV.KPH_TO_MS]
+        #ret.longitudinalTuning.kiV = [0.1, 0.06]
+
+        # HONDA
+        ret.longitudinalTuning.kpBP = [0., 5., 35.]
+        ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
+        ret.longitudinalTuning.kiBP = [0., 35.]
+        ret.longitudinalTuning.kiV = [0.18, 0.12]
 
         ret.stopAccel = -2.5
         ret.stoppingDecelRate = 0.3  # brake_travel/s while trying to stop
