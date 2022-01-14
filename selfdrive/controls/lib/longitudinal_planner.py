@@ -16,7 +16,7 @@ from selfdrive.ntune import ntune_scc_get
 
 LON_MPC_STEP = 0.2  # first step is 0.2s
 AWARENESS_DECEL = -0.2  # car smoothly decel at .2m/s^2 when user is distracted
-A_CRUISE_MIN = -2.3
+A_CRUISE_MIN = -2.0
 A_CRUISE_MAX_VALS = [1.5, 1.2, 0.8, 0.6]
 A_CRUISE_MAX_BP = [0., 15., 25., 40.]
 
@@ -29,9 +29,9 @@ DP_ACCEL_NORMAL = 2
 DP_ACCEL_SPORT = 3
 
 # accel profile by @arne182 modified by @wer5lcy
-_DP_CRUISE_MIN_V_ECO = [-2.0, -1.6, -1.5, -1.4, -1.2, -1.0]
-_DP_CRUISE_MIN_V_NORMAL = [-2.3, -1.8, -1.7, -1.6, -1.4, -1.2]
-_DP_CRUISE_MIN_V_SPORT = [-3.0, -2.6, -2.4, -2.3, -2.0, -1.0]
+_DP_CRUISE_MIN_V_ECO = [-2.0, -1.8, -1.6, -1.4, -1.2, -1.0]
+_DP_CRUISE_MIN_V_NORMAL = [-2.2, -2.0, -1.8, -1.6, -1.4, -1.0]
+_DP_CRUISE_MIN_V_SPORT = [-2.3, -2.2, -2.1, -1.9, -1.8, -1.0]
 _DP_CRUISE_MIN_BP = [0.0, 5.0, 10.0, 15.0, 20.0, 30.0]
 
 #_DP_CRUISE_MIN_V_ECO = [-6.0, -6.0, -4.0, -3.5, -3.0]
