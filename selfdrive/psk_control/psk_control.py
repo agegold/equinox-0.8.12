@@ -11,6 +11,7 @@ import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
+LEAD_SAFE = ntune_scc_get('leadSafe')
 LEAD_ACCEL_TAU = ntune_scc_get('leadAccelTau')
 DISTANCE_GAP = ntune_scc_get('distanceGap')
 ACCEL_PROFILE = ntune_scc_get('accelProfile')
@@ -27,7 +28,8 @@ def index():
     return render_template('openpilot_control.html',
                             accelProfileParam = ACCEL_PROFILE,
                             gapParam = DISTANCE_GAP,
-                            latParam = LEAD_ACCEL_TAU)
+                            latParam = LEAD_ACCEL_TAU,
+                            leadParam = LEAD_SAFE)
 
 
 @app.route('/apply', methods=['GET', 'POST'])
@@ -39,9 +41,12 @@ def apply():
         LEAD_ACCEL_TAU = request.form['lat']
         global ACCEL_PROFILE
         ACCEL_PROFILE = request.form['chk_accelProfile']
+        global LEAD_SAFE
+        LEAD_SAFE = request.form['chk_lead_safe']
 
         message = '{\n "distanceGap": DISTANCE_GAP,' \
                    '\n "accelProfile": ACCEL_PROFILE,' \
+                   '\n "leadSafe": LEAD_SAFE,' \
                    '\n "sccGasFactor": SCC_GAS_FACTOR,' \
                    '\n "leadAccelTau": LEAD_ACCEL_TAU,' \
                    '\n "sccBrakeFactor": SCC_BRAKE_FACTOR,' \
@@ -54,6 +59,7 @@ def apply():
 
         message = message.replace('DISTANCE_GAP', str(DISTANCE_GAP))
         message = message.replace('ACCEL_PROFILE', str(ACCEL_PROFILE))
+        message = message.replace('LEAD_SAFE', str(LEAD_SAFE))
         message = message.replace('LEAD_ACCEL_TAU', LEAD_ACCEL_TAU)
         message = message.replace('SCC_GAS_FACTOR', str(ntune_scc_get('sccGasFactor')))
         message = message.replace('SCC_BRAKE_FACTOR', str(ntune_scc_get('sccBrakeFactor')))
@@ -69,7 +75,8 @@ def apply():
         return render_template('openpilot_control.html',
                                 accelProfileParam = ACCEL_PROFILE,
                                 gapParam = DISTANCE_GAP,
-                                latParam = LEAD_ACCEL_TAU)
+                                latParam = LEAD_ACCEL_TAU,
+                                leadParam = LEAD_SAFE)
 
 
 

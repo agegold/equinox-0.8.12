@@ -189,6 +189,8 @@ class nTune():
     if self.checkValue("leadAccelTau", 1.5, 10.0, 3.0):
       updated = True
 
+    if self.checkValue("leadSafe", 0, 1, 0):
+      updated = True
 
     return updated
 

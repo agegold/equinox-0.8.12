@@ -237,11 +237,12 @@ static void ui_draw_bottom_info(UIState *s) {
     const char* lateral_state[] = {"Pid", "Indi", "Lqr"};
 
     snprintf(str, sizeof(str),
-    "[ %s ] Steer Ratio[ %.2f ] Long State[ %s ] Lead Accel Tau[ %.1f ]",
+    "[ %s ] Steer Ratio[ %.2f ] Long State[ %s ] Lead Accel Tau[ %.1f ] Lead Safe Mode[ %d ]",
     lateral_state[lateralControlState],
     controls_state.getSteerRatio(),
     long_state[longControlState],
-    controls_state.getLeadAccelTau()
+    controls_state.getLeadAccelTau(),
+    controls_state.getLeadSafeMode()
     );
 
     int x = bdr_s * 2;

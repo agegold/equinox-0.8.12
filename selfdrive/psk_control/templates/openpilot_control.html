@@ -99,6 +99,13 @@ input[type=text] {
 			document.frm1.chk_accelProfile[3].checked = true;
 		}
 
+		var lead = {{leadParam}};
+		if( lead == 0 ) {
+			document.frm1.chk_lead_safe[0].checked = true;
+		}else if( lead == 1 ) {
+			document.frm1.chk_lead_safe[1].checked = true;
+		}
+
 		var tau = {{latParam}};
 		document.frm1.lat.value = tau;
 
@@ -200,6 +207,14 @@ input[type=text] {
 		<p>
 			<font color="GREEN">LEAD ACCEL TAU (1.5 ~ 10.0)</font>
 			<br><input type="text" name="lat" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)">
+		</p>
+		</h3>
+
+		<h3>
+		<p>
+			<font color="GREEN">안전 주행 모드</font>
+			<br><input type="radio" name="chk_lead_safe" value=0> OFF
+			<br><input type="radio" name="chk_lead_safe" value=1> ON
 		</p>
 		</h3>
 
