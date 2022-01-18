@@ -237,7 +237,7 @@ class Controls:
       return None
 
 
-  def get_long_lead_safe_speed(self, vEgo, sm, CS):
+  def get_long_lead_safe_speed(self, sm, CS):
       if CS.adaptiveCruise:
         lead = self.get_lead(sm)
         if lead is not None:
@@ -250,11 +250,11 @@ class Controls:
             t = d / lead.vRel
             accel = -(lead.vRel / t) * self.speed_conv_to_clu
             # 속도를 증가하는 속도를 Delay 한다. -> 속도를 더 지속적으로 낮춘다.
-            accel *= 1.2
+            accel *= 0.2
 
             if accel < 0.:
               # target_speed = vEgo + accel  # accel 값은 1키로씩 상승한다.
-              target_speed = self.kph_to_clu(10)
+              target_speed = self.min_set_speed_clu
               return target_speed
 
       return 0
@@ -335,10 +335,11 @@ class Controls:
 
       # 안전거리 활성화
       if ntune_scc_get('leadSafe') == 1:
-        lead_speed = self.get_long_lead_safe_speed(vEgo, sm, CS)
+        lead_speed = self.get_long_lead_safe_speed(sm, CS)
         if lead_speed >= self.min_set_speed_clu:
             if lead_speed < max_speed_clu:
-              max_speed_clu = min(max_speed_clu, lead_speed)
+              #max_speed_clu = min(max_speed_clu, lead_speed)
+              max_speed_clu = lead_speed
               if not self.limited_lead:
                 self.max_speed_clu = vEgo + 3.
                 self.limited_lead = True
