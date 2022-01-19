@@ -166,7 +166,7 @@ class Controls:
     self.roadLimitSpeed = 0
     self.roadLimitSpeedLeftDist = 0
 
-    self.min_set_speed_clu = self.kph_to_clu(10)
+    self.min_set_speed_clu = self.kph_to_clu(MIN_SET_SPEED_KPH)
     self.max_set_speed_clu = self.kph_to_clu(MAX_SET_SPEED_KPH)
 
     # 앞차 거리 (PSK) 2021.10.15
@@ -237,7 +237,7 @@ class Controls:
       return None
 
 
-  def get_long_lead_safe_speed(self, sm, CS):
+  def get_long_lead_safe_speed(self, sm, CS, vEgo):
       if CS.adaptiveCruise:
         lead = self.get_lead(sm)
         if lead is not None:
@@ -254,7 +254,8 @@ class Controls:
 
             if accel < 0.:
               # target_speed = vEgo + accel  # accel 값은 1키로씩 상승한다.
-              target_speed = self.min_set_speed_clu
+              target_speed = vEgo + accel
+              target_speed = max(target_speed, self.min_set_speed_clu)
               return target_speed
 
       return 0
@@ -309,37 +310,34 @@ class Controls:
 
       max_speed_log = ""
 
-      if apply_limit_speed >= self.kph_to_clu(30):
+      if apply_limit_speed >= self.kph_to_clu(V_CRUISE_MIN):  # 크루즈 최저 속도보다 큰 경우 설정
 
         # 크루즈 초기 설정 속도 (PSK)
         # controls.v_cruise_kph : 크루즈 설정 속도
         if first_started:
-          self.max_speed_clu = self.v_cruise_kph
+          self.max_speed_clu = vEgo
+          #self.max_speed_clu = self.v_cruise_kph
 
         max_speed_clu = min(max_speed_clu, apply_limit_speed)
 
-        if self.v_cruise_kph > apply_limit_speed:
-
+        #if self.v_cruise_kph > apply_limit_speed:
+        if vEgo > apply_limit_speed:
           if not self.slowing_down_alert and not self.slowing_down:
             self.slowing_down_sound_alert = True
             self.slowing_down = True
-
           self.slowing_down_alert = True
-
         else:
           self.slowing_down_alert = False
-
       else:
         self.slowing_down_alert = False
         self.slowing_down = False
 
       # 안전거리 활성화
       if ntune_scc_get('leadSafe') == 1:
-        lead_speed = self.get_long_lead_safe_speed(sm, CS)
+        lead_speed = self.get_long_lead_safe_speed(sm, CS, vEgo)
         if lead_speed >= self.min_set_speed_clu:
             if lead_speed < max_speed_clu:
-              #max_speed_clu = min(max_speed_clu, lead_speed)
-              max_speed_clu = lead_speed
+              max_speed_clu = min(max_speed_clu, lead_speed)
               if not self.limited_lead:
                 self.max_speed_clu = vEgo + 3.
                 self.limited_lead = True
@@ -650,7 +648,7 @@ class Controls:
     if CS.adaptiveCruise:
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled, self.is_metric)
     elif not CS.adaptiveCruise and CS.cruiseState.enabled:
-      self.v_cruise_kph = 30
+      self.v_cruise_kph = V_CRUISE_MIN
 
     #self.update_cruise_buttons(CS)
 
