@@ -168,6 +168,7 @@ class Controls:
 
     self.min_set_speed_clu = self.kph_to_clu(MIN_SET_SPEED_KPH)
     self.max_set_speed_clu = self.kph_to_clu(MAX_SET_SPEED_KPH)
+    self.brake_set_speed_clu = self.kph_to_clu(5)
 
     # 앞차 거리 (PSK) 2021.10.15
     # 레이더 비전 상태를 저장한다.
@@ -255,7 +256,7 @@ class Controls:
             if accel < 0.:
               # target_speed = vEgo + accel  # accel 값은 1키로씩 상승한다.
               target_speed = vEgo + accel
-              target_speed = max(target_speed, self.min_set_speed_clu)
+              target_speed = max(target_speed, self.brake_set_speed_clu)
               return target_speed
 
       return 0
@@ -335,9 +336,9 @@ class Controls:
       # 안전거리 활성화
       if ntune_scc_get('leadSafe') == 1:
         lead_speed = self.get_long_lead_safe_speed(sm, CS, vEgo)
-        if lead_speed >= self.min_set_speed_clu:
+        if lead_speed >= self.brake_set_speed_clu:
             if lead_speed < max_speed_clu:
-              max_speed_clu = min(max_speed_clu, lead_speed)
+              max_speed_clu = lead_speed
               if not self.limited_lead:
                 self.max_speed_clu = vEgo + 3.
                 self.limited_lead = True
