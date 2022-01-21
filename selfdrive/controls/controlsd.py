@@ -168,7 +168,6 @@ class Controls:
 
     self.min_set_speed_clu = self.kph_to_clu(MIN_SET_SPEED_KPH)
     self.max_set_speed_clu = self.kph_to_clu(MAX_SET_SPEED_KPH)
-    self.brake_set_speed_clu = self.kph_to_clu(10)
 
     # 앞차 거리 (PSK) 2021.10.15
     # 레이더 비전 상태를 저장한다.
@@ -247,18 +246,17 @@ class Controls:
           # vRel : Real Speed (- 값이면 내차 속도가 더 빠름)
           # lead의 vrel(상대속도)에 곱해지는 상수라 커지면 더 멀리서 줄이기 시작합니다
           # longLeadVision : 비전이 인식한 지정된 거리부터 속도를 줄인다.
-          if 0. < d < -lead.vRel * (9. + 3.) * 1.3:
-            return self.brake_set_speed_clu
-            #t = d / lead.vRel
-            #accel = -(lead.vRel / t) * self.speed_conv_to_clu
+          if 0. < d < -lead.vRel * (9. + 3.) * 1.5:
+            t = d / lead.vRel
+            accel = -(lead.vRel / t) * self.speed_conv_to_clu
             # 속도를 증가하는 속도를 Delay 한다. -> 속도를 더 지속적으로 낮춘다.
-            #accel *= 0.2
+            accel *= 0.01
 
-            #if accel < 0.:
+            if accel < 0.:
               # target_speed = vEgo + accel  # accel 값은 1키로씩 상승한다.
-              #target_speed = vEgo + accel
-              #target_speed = max(target_speed, self.brake_set_speed_clu)
-              #return target_speed
+              target_speed = vEgo + accel
+              target_speed = max(target_speed, self.min_set_speed_clu)
+              return target_speed
 
       return 0
 
@@ -335,27 +333,17 @@ class Controls:
         self.slowing_down = False
 
       # 안전거리 활성화
-      #if ntune_scc_get('leadSafe') == 1:
-      #  lead_speed = self.get_long_lead_safe_speed(sm, CS, vEgo)
-      #  if lead_speed >= self.brake_set_speed_clu:
-      #      if lead_speed < max_speed_clu:
-      #        max_speed_clu = lead_speed
-      #        if not self.limited_lead:
-      #          self.max_speed_clu = vEgo + 3.
-      #          self.limited_lead = True
-      #  else:
-      #    self.limited_lead = False
-
-      # 안전거리 활성화
       if ntune_scc_get('leadSafe') == 1:
         lead_speed = self.get_long_lead_safe_speed(sm, CS, vEgo)
-        if lead_speed < max_speed_clu:
-          max_speed_clu = lead_speed
-          if not self.limited_lead:   # False
-            self.max_speed_clu = vEgo + 3.
-            self.limited_lead = True
+        if lead_speed >= self.min_set_speed_clu:
+            if lead_speed < max_speed_clu:
+              max_speed_clu = min(max_speed_clu, lead_speed)
+              if not self.limited_lead:
+                self.max_speed_clu = vEgo + 3.
+                self.limited_lead = True
         else:
           self.limited_lead = False
+
 
       self.update_max_speed(int(max_speed_clu + 0.5), CS)
       # print("update_max_speed() value : ", self.max_speed_clu)
